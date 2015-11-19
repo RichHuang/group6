@@ -1,0 +1,83 @@
+﻿@model IEnumerable<GroupShop.Models.TeamOrder>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+    <table class="table">
+        <tr>
+            <th>
+                團購名稱
+            </th>
+            <th>
+                訂購人
+            </th>
+            <th>
+                商品
+            </th>
+       
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model)
+    {
+        using (Html.BeginForm("EditQuantity", "TeamOrders", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <tr>
+                <td>
+                    @item.Teambuys.ToString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teambuys.Members.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Products.Name)
+                </td>
+
+                <td>
+                    @Html.HiddenFor(modelItem => item.MemberId)
+                    @Html.HiddenFor(modelItem => item.TeamId)
+                    @Html.HiddenFor(modelItem => item.ProductId)
+                    @if (Session["LoginMemberId"] != null && item.MemberId == Session["LoginMemberId"].ToString())
+                    {
+                        @Html.EditorFor(modelItem => item.Quantity)
+                    }
+                    else
+                    {
+
+                        @Html.DisplayFor(modelItem => item.Quantity)
+
+                    }
+
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    <input type="submit" value="儲存" class="btn btn-link" />
+                    @Html.ActionLink("儲存", "EditQuantity", new { memberid = item.MemberId, teamid = item.TeamId, productid = item.ProductId }) |
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+
+        }
+    }
+
+    </table>
+

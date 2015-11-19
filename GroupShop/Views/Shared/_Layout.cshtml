@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/bundles/css")
+    @Styles.Render("~/bundles/typeahead-js-bootstrap")
+    @*@Styles.Render("~/Content/smoothness/jquery-ui-1.10.3.custom")*@
+    @*@Styles.Render("~/Content/tablesorter")*@
+    @Styles.Render("~/bundles/pagedlist")
+    @Styles.Render("~/bundles/select2")
+    @Scripts.Render("~/bundles/modernizr")
+
+    
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("GroupShop", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("會員維護", "Index", "Members")</li>
+                    <li>@Html.ActionLink("商品維護", "Index", "Products")</li>
+                    <li>@Html.ActionLink("供應商維護", "Index", "Suppliers")</li>
+                    <li>@Html.ActionLink("團購維護", "Index", "Teambuys")</li>
+                    <li>@Html.ActionLink("團購訂單", "Index", "Teamorders")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @if(@ViewBag.SuccessMessage != null){ 
+            <br />
+            <div class="container">
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>成功!</strong> @ViewBag.SuccessMessage
+                </div>
+            </div>
+        }
+        @if (@ViewBag.InfoMessage != null)
+        {
+            <br />
+            <div class="container">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>資訊!</strong> @ViewBag.InfoMessage
+                </div>
+            </div>
+        }
+        @if (@ViewBag.WarningMessage != null)
+        {
+            <br />
+            <div class="container">
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>注意!</strong> @ViewBag.WarningMessage
+                </div>
+            </div>
+        }
+        @if (@ViewBag.DangerMessage != null)
+        {
+            <br />
+            <div class="container">
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>錯誤!</strong> @ViewBag.DangerMessage
+                </div>
+            </div>
+        }
+
+        
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/typeahead")
+    @*@Scripts.Render("~/bundles/jquery.tablesorter")*@
+    
+    @Scripts.Render("~/bundles/select2-js")
+    @Scripts.Render("~/bundles/jquery-spin")
+    @Scripts.Render("~/bundles/project-common")
+   @* @Scripts.Render("~/bundles/jquery-ui-1.10.3.custom")*@
+    
+    @RenderSection("scripts", required: false)
+</body>
+</html>

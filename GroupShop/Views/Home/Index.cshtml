@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>GroupShop</h1>
+    <p class="lead">團購網</p>
+    
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-md-push-2">
+        <h2>開團</h2>
+        <p>建立自己的團購</p>
+        <div class="col-md-offset-2">
+            
+            @using (Html.BeginForm("Create", "Teambuys", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    團購商家
+                    <div class="col-md-10">
+                        <select id="SupplierId" name="SupplierId" class="form-control">
+                            @{
+                                GroupShop.Models.SupplierDbContext supplierDbContext = new GroupShop.Models.SupplierDbContext();
+                            }
+                            @foreach (GroupShop.Models.Supplier supplier in supplierDbContext.Suppliers)
+                            {
+                                <option value="@supplier.SupplierId">@supplier.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    成團條件($)
+                    <div class="col-md-10">
+                            <input id="LeastAmount" name="LeastAmount" type="number" data-val-required="成團條件($) 欄位是必要項。" data-val="true" data-val-number="The field 成團條件($) must be a number."/>
+                    </div>
+                </div>
+                
+                if (Session["LoginPersonId"] == null)
+                {
+                    <h6>(請先登入)</h6>
+                }
+                else
+                {
+                    <input type="submit" value="開團~" class="btn btn-default" />
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-4 col-md-push-2">
+        <h2>跟團購物去</h2>
+        <p>選擇已經存在的團，並且選購商品</p>
+        <div class="col-md-offset-2">
+
+            @using (Html.BeginForm("SelectProduct", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    參加團購
+                    <div class="col-md-10">
+                        @{
+                            GroupShop.Models.TeambuyDbContext teambuyDbContext = new GroupShop.Models.TeambuyDbContext();
+                        }
+                        <ul>
+                            @foreach (GroupShop.Models.Teambuy teambuy in teambuyDbContext.Teambuys)
+                            {
+                                <li>@teambuy.ToString() @Html.ActionLink("明細", "SingleTeamIndex", "TeamOrders", new { teamId = @teambuy.TeamId },null)</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    成團條件($)
+                    <div class="col-md-10">
+                        <input id="LeastAmount" name="LeastAmount" type="number" data-val-required="成團條件($) 欄位是必要項。" data-val="true" data-val-number="The field 成團條件($) must be a number." />
+                    </div>
+                </div>
+
+                                if (Session["LoginPersonId"] == null)
+                                {
+                                    <h6>(請先登入)</h6>
+                                }
+                                else
+                                {
+                                    <input type="submit" value="開團~" class="btn btn-default" />
+                                    }
+                                }
+        </div>
+    </div>
+</div>
