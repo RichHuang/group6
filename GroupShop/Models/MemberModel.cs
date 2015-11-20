@@ -10,10 +10,11 @@ namespace GroupShop.Models
     {
         [Key]
         [Column("MEMBERID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string MemberId { get; set; }
 
-        
 
+        [Display(Name = "身分證字號")]
         [Column("PERSONID")]
         public string PersonId { get; set; }
 

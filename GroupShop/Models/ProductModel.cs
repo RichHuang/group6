@@ -10,9 +10,11 @@ namespace GroupShop.Models
     {
         [Key]
         [Column("PRODUCTID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ProductId { get; set; }
 
         [Column("SUPPLIERID")]
+        [Display(Name = "供應商")]
         public string SupplierId { get; set; }
 
         [ForeignKey("SupplierId")]

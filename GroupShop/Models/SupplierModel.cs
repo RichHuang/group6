@@ -10,6 +10,7 @@ namespace GroupShop.Models
     {
         [Key]
         [Column("SUPPLIERID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string SupplierId { get; set; }
 
         [Display(Name = "供應商名稱")]

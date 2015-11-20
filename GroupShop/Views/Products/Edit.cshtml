@@ -20,7 +20,24 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SupplierId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SupplierId, new { htmlAttributes = new { @class = "form-control" } })
+                <select id="SupplierId" name="SupplierId" class="form-control">
+                    @{
+                        GroupShop.Models.SupplierDbContext supplierDbContext = new GroupShop.Models.SupplierDbContext();
+                        string selectedString = "";
+                    }
+                    @foreach (GroupShop.Models.Supplier supplier in supplierDbContext.Suppliers)
+                    {
+                        if (Model.SupplierId == supplier.SupplierId)
+                        {
+                            selectedString = "selected=selected";
+                        }
+                        else {
+                            selectedString = "";
+                        }
+                        <option value="@supplier.SupplierId" @selectedString>@supplier.Name</option>
+                    }
+                </select>
+
                 @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
             </div>
         </div>
