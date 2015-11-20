@@ -68,6 +68,7 @@ namespace GroupShop.Models
 
         //
         // POST: /Account/LogOff
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
