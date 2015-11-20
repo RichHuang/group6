@@ -67,7 +67,29 @@
                         <ul>
                             @foreach (GroupShop.Models.Teambuy teambuy in teambuyDbContext.Teambuys)
                             {
-                                <li>@teambuy.ToString() @Html.ActionLink("明細", "SingleTeamIndex", "TeamOrders", new { teamId = @teambuy.TeamId }, null)</li>
+                                <li>@teambuy.ToString() 
+                                    @if (teambuy.Status == "1")
+                                    {
+                                        @Html.ActionLink("明細", "SingleTeamIndex", "TeamOrders", new { teamId = @teambuy.TeamId }, null)
+
+                                    }
+                                    @if (teambuy.LeastAmount <= teambuy.TeamOrders.Sum(m => m.Amount) && Session["LoginMemberId"] != null && teambuy.MemberId == Session["LoginMemberId"].ToString() && teambuy.Status == "1")
+                                    {
+                                        
+                                        @Html.ActionLink("成團", "Create", "Transactions", new { teamId = @teambuy.TeamId }, null)
+                                       
+
+                                    }
+                                    @if (teambuy.Status == "2")
+                                    {
+
+                                        <img src="~/images/勾.png" style="width:20px;height:20px;margin-bottom:17px;" title="已成團" />
+
+
+                                    }
+
+                                    
+                                </li>
                             }
                         </ul>
                     </div>

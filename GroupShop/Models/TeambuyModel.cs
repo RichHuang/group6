@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -31,7 +32,7 @@ namespace GroupShop.Models
         public DateTime? Enddate { get; set; }
 
 
-        [Display(Name = "成團條件($)")]
+        [Display(Name = "成團金額($)")]
         [Column("LEASTAMOUNT")]
         public int LeastAmount { get; set; }
 
@@ -39,7 +40,8 @@ namespace GroupShop.Models
         [Column("STATUS")]
         public string Status { get; set; } //1 開團 2成團 3流團
 
-        
+        public virtual ICollection<TeamOrder> TeamOrders { get; set; }
+
         public override string ToString() {
             TeambuyDbContext db = new TeambuyDbContext();
             TeamOrder t = db.TeamOrders.FirstOrDefaultAsync(m => m.TeamId == this.TeamId).Result;
