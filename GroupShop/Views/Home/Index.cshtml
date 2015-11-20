@@ -67,27 +67,12 @@
                         <ul>
                             @foreach (GroupShop.Models.Teambuy teambuy in teambuyDbContext.Teambuys)
                             {
-                                <li>@teambuy.ToString() @Html.ActionLink("明細", "SingleTeamIndex", "TeamOrders", new { teamId = @teambuy.TeamId },null)</li>
+                                <li>@teambuy.ToString() @Html.ActionLink("明細", "SingleTeamIndex", "TeamOrders", new { teamId = @teambuy.TeamId }, null)</li>
                             }
                         </ul>
                     </div>
                 </div>
-                <div class="form-group">
-                    成團條件($)
-                    <div class="col-md-10">
-                        <input id="LeastAmount" name="LeastAmount" type="number" data-val-required="成團條件($) 欄位是必要項。" data-val="true" data-val-number="The field 成團條件($) must be a number." />
-                    </div>
-                </div>
-
-                                if (Session["LoginPersonId"] == null)
-                                {
-                                    <h6>(請先登入)</h6>
-                                }
-                                else
-                                {
-                                    <input type="submit" value="開團~" class="btn btn-default" />
-                                    }
-                                }
+            }
         </div>
     </div>
 </div>

@@ -1,59 +1,47 @@
-﻿@model GroupShop.Models.TeamOrder
+﻿@model GroupShop.Models.Teambuy
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>加購商品</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>TeamOrder</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+       
+        <input type="hidden" name="TeamId" value="@Model.TeamId" />
+
         <div class="form-group">
-            @Html.LabelFor(model => model.MemberId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="control-label col-md-2">商品名稱</div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.MemberId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MemberId, "", new { @class = "text-danger" })
+                @{
+                    
+                    GroupShop.Models.TeambuyDbContext teambuyDb = new GroupShop.Models.TeambuyDbContext();
+                    
+                }
+                <select name="ProductId" class="form-control">
+                    @foreach (GroupShop.Models.TeamOrder teamOrder in teambuyDb.TeamOrders.Where(m=>m.MemberId == Model.MemberId && m.TeamId == Model.TeamId).ToList())
+                    {
+                        <option value="@teamOrder.ProductId">@teamOrder.Products.Name</option>
+                    }
+                </select>
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TeamId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="control-label col-md-2">加購數量</div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.TeamId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TeamId, "", new { @class = "text-danger" })
+                <input type="number" name="Quantity" class="form-control"/>
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProductId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

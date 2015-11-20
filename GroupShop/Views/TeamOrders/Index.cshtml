@@ -5,10 +5,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>團購訂單</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (Session["LoginPersonId"] == null)
+    {
+    <h6>(加購商品 請先登入)</h6>
+    }
+    else
+    {
+        object o = null;
+        if (ViewData["TeamId"] != null)
+        {
+            o = new { teamid = ViewData["TeamId"] };
+        }
+
+        @Html.ActionLink("加購商品", "Create", o, null)
+    }
+    
 </p>
     <table class="table">
         <tr>
@@ -20,6 +34,9 @@
             </th>
             <th>
                 商品
+            </th>
+            <th>
+                單價
             </th>
        
             <th>
@@ -41,19 +58,23 @@
                     @item.Teambuys.ToString()
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Teambuys.Members.Name)
+                    @Html.DisplayFor(modelItem => item.Members.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Products.Name)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Products.UnitPrice)
+                </td>
 
                 <td>
-                    @Html.HiddenFor(modelItem => item.MemberId)
-                    @Html.HiddenFor(modelItem => item.TeamId)
-                    @Html.HiddenFor(modelItem => item.ProductId)
+                    <input type="hidden" name="MemberId" value="@item.MemberId" />
+                    <input type="hidden" name="TeamId" value="@item.TeamId" />
+                    <input type="hidden" name="ProductId" value="@item.ProductId" />
+
                     @if (Session["LoginMemberId"] != null && item.MemberId == Session["LoginMemberId"].ToString())
                     {
-                        @Html.EditorFor(modelItem => item.Quantity)
+                        <input type="number" name="Quantity" value="@item.Quantity" />
                     }
                     else
                     {
@@ -68,11 +89,14 @@
                     @Html.DisplayFor(modelItem => item.Amount)
                 </td>
                 <td>
-                    <input type="submit" value="儲存" class="btn btn-link" />
-                    @Html.ActionLink("儲存", "EditQuantity", new { memberid = item.MemberId, teamid = item.TeamId, productid = item.ProductId }) |
+                    @if (Session["LoginMemberId"] != null && item.MemberId == Session["LoginMemberId"].ToString())
+                    {
+                        <input type="submit" value="更新數量" class="btn btn-link" />
+                    }
+                    @*@Html.ActionLink("儲存", "EditQuantity", new { memberid = item.MemberId, teamid = item.TeamId, productid = item.ProductId }) |
                     @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                     @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
                 </td>
             </tr>
 

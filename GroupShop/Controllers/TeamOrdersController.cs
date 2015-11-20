@@ -22,7 +22,8 @@ namespace GroupShop.Controllers
 
         public ActionResult SingleTeamIndex(string teamId)
         {
-
+            @ViewBag.SuccessMessage = TempData["SuccessMessage"] != null ? TempData["SuccessMessage"].ToString() : null;
+            ViewData["TeamId"] = teamId;
             return View("Index",db.TeamOrders.Where(m=>m.TeamId == teamId).ToList());
         }
 
@@ -42,9 +43,11 @@ namespace GroupShop.Controllers
         }
 
         // GET: TeamOrders/Create
-        public ActionResult Create()
+        public ActionResult Create(string teamId)
         {
-            return View();
+            TeambuyDbContext teamDb = new TeambuyDbContext();
+            Teambuy tBuy = teamDb.Teambuys.SingleOrDefault(m => m.TeamId == teamId);
+            return View(tBuy);
         }
 
         // POST: TeamOrders/Create
@@ -54,11 +57,40 @@ namespace GroupShop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MemberId,TeamId,ProductId,Amount,Quantity")] TeamOrder teamOrder)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && Session["LoginMemberId"] != null)
             {
-                db.TeamOrders.Add(teamOrder);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                string LoginMemberId = Session["LoginMemberId"].ToString();
+                TeamOrder existTeamOrder = db.TeamOrders.SingleOrDefault(m => m.MemberId == LoginMemberId && m.ProductId == teamOrder.ProductId && m.TeamId == teamOrder.TeamId);
+
+                if (existTeamOrder == null)
+                {
+                    ProductDbContext prodDb = new ProductDbContext();
+                    Product prod = prodDb.Products.SingleOrDefault(m => m.ProductId == teamOrder.ProductId);
+
+                    teamOrder.Amount = prod.UnitPrice * teamOrder.Quantity;
+                    teamOrder.MemberId = Session["LoginMemberId"].ToString();
+
+                    db.TeamOrders.Add(teamOrder);
+                    db.SaveChanges();
+
+
+                }
+                else {
+                    ProductDbContext prodDb = new ProductDbContext();
+                    Product prod = prodDb.Products.SingleOrDefault(m => m.ProductId == teamOrder.ProductId);
+
+                    existTeamOrder.Quantity = teamOrder.Quantity + existTeamOrder.Quantity;
+
+                    existTeamOrder.Amount = prod.UnitPrice * teamOrder.Quantity;
+                
+          
+
+                    db.Entry(existTeamOrder).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                }
+
+                return RedirectToAction("SingleTeamIndex", new { teamid = teamOrder.TeamId });
             }
 
             return View(teamOrder);
@@ -96,14 +128,20 @@ namespace GroupShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditQuantity([Bind(Include = "MemberId,TeamId,ProductId,Quantity")] TeamOrder teamOrder)
+        public ActionResult EditQuantity(TeamOrder teamOrder)
         {
             if (ModelState.IsValid)
             {
-                    db.Entry(teamOrder).State = EntityState.Modified;
-                    db.SaveChanges();
+                ProductDbContext prodDb = new ProductDbContext();
+                Product prod = prodDb.Products.SingleOrDefault(m => m.ProductId == teamOrder.ProductId);
+                teamOrder.Amount = prod.UnitPrice * teamOrder.Quantity;
+                db.Entry(teamOrder).State = EntityState.Modified;
+                db.SaveChanges();
+                
+                TempData["SuccessMessage"] = "儲存成功";
+                return RedirectToAction("SingleTeamIndex", new { teamid = teamOrder.TeamId });
 
-                return RedirectToAction("Index");
+
             }
             return View(teamOrder);
         }
