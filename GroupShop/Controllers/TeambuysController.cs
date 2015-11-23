@@ -86,6 +86,18 @@ namespace GroupShop.Controllers
             return View(teambuy);
         }
 
+        public ActionResult Cancel(string teamId)
+        {
+            Teambuy teambuy = db.Teambuys.SingleOrDefault(m => m.TeamId == teamId);
+            if (teambuy != null) {
+                teambuy.Status = "3";
+                db.Entry(teambuy).State = EntityState.Modified;
+
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index","Home",null);
+        }
+
         // GET: Teambuys/Edit/5
         public ActionResult Edit(string id)
         {

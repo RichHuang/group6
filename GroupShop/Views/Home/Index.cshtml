@@ -80,10 +80,24 @@
                                        
 
                                     }
+                                    @if (Session["LoginMemberId"] != null && teambuy.MemberId == Session["LoginMemberId"].ToString() && teambuy.Status == "1")
+                                    {
+
+                                        @Html.ActionLink("流團", "Cancel", "Teambuys", new { teamId = @teambuy.TeamId }, null)
+
+
+                                    }
                                     @if (teambuy.Status == "2")
                                     {
 
                                         <img src="~/images/勾.png" style="width:20px;height:20px;margin-bottom:17px;" title="已成團" />
+
+
+                                    }
+                                    @if (teambuy.Status == "3")
+                                    {
+
+                                        <img src="~/images/叉.png" style="width:20px;height:20px;margin-bottom:17px;" title="已流團" />
 
 
                                     }

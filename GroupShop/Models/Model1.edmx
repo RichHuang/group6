@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Model.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="12.1" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="MEMBERS">
+          <Key>
+            <PropertyRef Name="MEMBERID" />
+          </Key>
+          <Property Name="MEMBERID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="PERSONID" Type="varchar2" MaxLength="10" Nullable="false" />
+          <Property Name="NAME" Type="varchar2" MaxLength="20" />
+          <Property Name="EMAIL" Type="varchar2" MaxLength="120" />
+          <Property Name="PHONE" Type="varchar2" MaxLength="20" />
+          <Property Name="ADDRESS" Type="varchar2" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="PRODUCTID" />
+          </Key>
+          <Property Name="PRODUCTID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="SUPPLIERID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="NAME" Type="varchar2" MaxLength="60" Nullable="false" />
+          <Property Name="UNITPRICE" Type="number" Precision="10" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SUPPLIER">
+          <Key>
+            <PropertyRef Name="SUPPLIERID" />
+          </Key>
+          <Property Name="SUPPLIERID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="NAME" Type="varchar2" MaxLength="60" />
+          <Property Name="PHONE" Type="varchar2" MaxLength="20" />
+          <Property Name="ADDRESS" Type="varchar2" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="TEAMBUY">
+          <Key>
+            <PropertyRef Name="TEAMID" />
+          </Key>
+          <Property Name="TEAMID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="MEMBERID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="STARTDATE" Type="date" Nullable="false" />
+          <Property Name="ENDDATE" Type="date" />
+          <Property Name="LEASTAMOUNT" Type="number" Precision="25" Scale="0" Nullable="false" />
+          <Property Name="STATUS" Type="varchar2" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="TEAMORDER">
+          <Key>
+            <PropertyRef Name="MEMBERID" />
+            <PropertyRef Name="TEAMID" />
+            <PropertyRef Name="PRODUCTID" />
+          </Key>
+          <Property Name="MEMBERID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="TEAMID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="PRODUCTID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="AMOUNT" Type="number" Precision="10" Scale="0" />
+          <Property Name="QUANTITY" Type="number" Precision="38" Scale="0" />
+        </EntityType>
+        <EntityType Name="TRANSACTION">
+          <Key>
+            <PropertyRef Name="TID" />
+          </Key>
+          <Property Name="TID" Type="varchar2" MaxLength="36" Nullable="false" />
+          <Property Name="TEAMID" Type="varchar2" MaxLength="5" Nullable="false" />
+          <Property Name="TIME" Type="date" />
+          <Property Name="ADDRESS" Type="varchar2" MaxLength="225" />
+        </EntityType>
+        <Association Name="FK_PD_SUPPLEIRID_SUPPLIER_ID">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="SUPPLIERID" />
+            </Principal>
+            <Dependent Role="PRODUCT">
+              <PropertyRef Name="SUPPLIERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TB_MEMBERID_MEMBERS_ID">
+          <End Role="MEMBERS" Type="Self.MEMBERS" Multiplicity="1" />
+          <End Role="TEAMBUY" Type="Self.TEAMBUY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MEMBERS">
+              <PropertyRef Name="MEMBERID" />
+            </Principal>
+            <Dependent Role="TEAMBUY">
+              <PropertyRef Name="MEMBERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_MEMBERID_MEMBER_MEMBERID">
+          <End Role="MEMBERS" Type="Self.MEMBERS" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MEMBERS">
+              <PropertyRef Name="MEMBERID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="MEMBERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_PRODUCTID_PD_PRODUCTID">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="PRODUCTID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="PRODUCTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_TEAMID_TEAMBUY_TEAMID">
+          <End Role="TEAMBUY" Type="Self.TEAMBUY" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TEAMBUY">
+              <PropertyRef Name="TEAMID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="TEAMID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="MEMBERS" EntityType="Self.MEMBERS" Schema="GROUP6" store:Type="Tables" />
+          <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" Schema="GROUP6" store:Type="Tables" />
+          <EntitySet Name="SUPPLIER" EntityType="Self.SUPPLIER" Schema="GROUP6" store:Type="Tables" />
+          <EntitySet Name="TEAMBUY" EntityType="Self.TEAMBUY" Schema="GROUP6" store:Type="Tables" />
+          <EntitySet Name="TEAMORDER" EntityType="Self.TEAMORDER" Schema="GROUP6" store:Type="Tables" />
+          <EntitySet Name="TRANSACTION" EntityType="Self.TRANSACTION" Schema="GROUP6" store:Type="Tables" />
+          <AssociationSet Name="FK_PD_SUPPLEIRID_SUPPLIER_ID" Association="Self.FK_PD_SUPPLEIRID_SUPPLIER_ID">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TB_MEMBERID_MEMBERS_ID" Association="Self.FK_TB_MEMBERID_MEMBERS_ID">
+            <End Role="MEMBERS" EntitySet="MEMBERS" />
+            <End Role="TEAMBUY" EntitySet="TEAMBUY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_MEMBERID_MEMBER_MEMBERID" Association="Self.FK_TO_MEMBERID_MEMBER_MEMBERID">
+            <End Role="MEMBERS" EntitySet="MEMBERS" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_PRODUCTID_PD_PRODUCTID" Association="Self.FK_TO_PRODUCTID_PD_PRODUCTID">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_TEAMID_TEAMBUY_TEAMID" Association="Self.FK_TO_TEAMID_TEAMBUY_TEAMID">
+            <End Role="TEAMBUY" EntitySet="TEAMBUY" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="MEMBERS">
+          <Key>
+            <PropertyRef Name="MEMBERID" />
+          </Key>
+          <Property Name="MEMBERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PERSONID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EMAIL" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
+          <Property Name="PHONE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ADDRESS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TEAMBUY" Relationship="Self.FK_TB_MEMBERID_MEMBERS_ID" FromRole="MEMBERS" ToRole="TEAMBUY" />
+          <NavigationProperty Name="TEAMORDER" Relationship="Self.FK_TO_MEMBERID_MEMBER_MEMBERID" FromRole="MEMBERS" ToRole="TEAMORDER" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="PRODUCTID" />
+          </Key>
+          <Property Name="PRODUCTID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SUPPLIERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UNITPRICE" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SUPPLIER" Relationship="Self.FK_PD_SUPPLEIRID_SUPPLIER_ID" FromRole="PRODUCT" ToRole="SUPPLIER" />
+          <NavigationProperty Name="TEAMORDER" Relationship="Self.FK_TO_PRODUCTID_PD_PRODUCTID" FromRole="PRODUCT" ToRole="TEAMORDER" />
+        </EntityType>
+        <EntityType Name="SUPPLIER">
+          <Key>
+            <PropertyRef Name="SUPPLIERID" />
+          </Key>
+          <Property Name="SUPPLIERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="PHONE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ADDRESS" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PRODUCT" Relationship="Self.FK_PD_SUPPLEIRID_SUPPLIER_ID" FromRole="SUPPLIER" ToRole="PRODUCT" />
+        </EntityType>
+        <EntityType Name="TEAMBUY">
+          <Key>
+            <PropertyRef Name="TEAMID" />
+          </Key>
+          <Property Name="TEAMID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MEMBERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="STARTDATE" Type="DateTime" Nullable="false" />
+          <Property Name="ENDDATE" Type="DateTime" />
+          <Property Name="LEASTAMOUNT" Type="Decimal" Precision="25" Scale="0" Nullable="false" />
+          <Property Name="STATUS" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="MEMBERS" Relationship="Self.FK_TB_MEMBERID_MEMBERS_ID" FromRole="TEAMBUY" ToRole="MEMBERS" />
+          <NavigationProperty Name="TEAMORDER" Relationship="Self.FK_TO_TEAMID_TEAMBUY_TEAMID" FromRole="TEAMBUY" ToRole="TEAMORDER" />
+        </EntityType>
+        <EntityType Name="TEAMORDER">
+          <Key>
+            <PropertyRef Name="MEMBERID" />
+            <PropertyRef Name="TEAMID" />
+            <PropertyRef Name="PRODUCTID" />
+          </Key>
+          <Property Name="MEMBERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TEAMID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PRODUCTID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AMOUNT" Type="Int32" />
+          <Property Name="QUANTITY" Type="Decimal" Precision="38" Scale="0" />
+          <NavigationProperty Name="MEMBERS" Relationship="Self.FK_TO_MEMBERID_MEMBER_MEMBERID" FromRole="TEAMORDER" ToRole="MEMBERS" />
+          <NavigationProperty Name="PRODUCT" Relationship="Self.FK_TO_PRODUCTID_PD_PRODUCTID" FromRole="TEAMORDER" ToRole="PRODUCT" />
+          <NavigationProperty Name="TEAMBUY" Relationship="Self.FK_TO_TEAMID_TEAMBUY_TEAMID" FromRole="TEAMORDER" ToRole="TEAMBUY" />
+        </EntityType>
+        <EntityType Name="TRANSACTION">
+          <Key>
+            <PropertyRef Name="TID" />
+          </Key>
+          <Property Name="TID" Type="String" MaxLength="36" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TEAMID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TIME" Type="DateTime" />
+          <Property Name="ADDRESS" Type="String" MaxLength="225" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_TB_MEMBERID_MEMBERS_ID">
+          <End Role="MEMBERS" Type="Self.MEMBERS" Multiplicity="1" />
+          <End Role="TEAMBUY" Type="Self.TEAMBUY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MEMBERS">
+              <PropertyRef Name="MEMBERID" />
+            </Principal>
+            <Dependent Role="TEAMBUY">
+              <PropertyRef Name="MEMBERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_MEMBERID_MEMBER_MEMBERID">
+          <End Role="MEMBERS" Type="Self.MEMBERS" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MEMBERS">
+              <PropertyRef Name="MEMBERID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="MEMBERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PD_SUPPLEIRID_SUPPLIER_ID">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="SUPPLIERID" />
+            </Principal>
+            <Dependent Role="PRODUCT">
+              <PropertyRef Name="SUPPLIERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_PRODUCTID_PD_PRODUCTID">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="PRODUCTID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="PRODUCTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TO_TEAMID_TEAMBUY_TEAMID">
+          <End Role="TEAMBUY" Type="Self.TEAMBUY" Multiplicity="1" />
+          <End Role="TEAMORDER" Type="Self.TEAMORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TEAMBUY">
+              <PropertyRef Name="TEAMID" />
+            </Principal>
+            <Dependent Role="TEAMORDER">
+              <PropertyRef Name="TEAMID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MEMBERS" EntityType="Self.MEMBERS" />
+          <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" />
+          <EntitySet Name="SUPPLIER" EntityType="Self.SUPPLIER" />
+          <EntitySet Name="TEAMBUY" EntityType="Self.TEAMBUY" />
+          <EntitySet Name="TEAMORDER" EntityType="Self.TEAMORDER" />
+          <EntitySet Name="TRANSACTION" EntityType="Self.TRANSACTION" />
+          <AssociationSet Name="FK_TB_MEMBERID_MEMBERS_ID" Association="Self.FK_TB_MEMBERID_MEMBERS_ID">
+            <End Role="MEMBERS" EntitySet="MEMBERS" />
+            <End Role="TEAMBUY" EntitySet="TEAMBUY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_MEMBERID_MEMBER_MEMBERID" Association="Self.FK_TO_MEMBERID_MEMBER_MEMBERID">
+            <End Role="MEMBERS" EntitySet="MEMBERS" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PD_SUPPLEIRID_SUPPLIER_ID" Association="Self.FK_PD_SUPPLEIRID_SUPPLIER_ID">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_PRODUCTID_PD_PRODUCTID" Association="Self.FK_TO_PRODUCTID_PD_PRODUCTID">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TO_TEAMID_TEAMBUY_TEAMID" Association="Self.FK_TO_TEAMID_TEAMBUY_TEAMID">
+            <End Role="TEAMBUY" EntitySet="TEAMBUY" />
+            <End Role="TEAMORDER" EntitySet="TEAMORDER" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="MEMBERS">
+            <EntityTypeMapping TypeName="Model.MEMBERS">
+              <MappingFragment StoreEntitySet="MEMBERS">
+                <ScalarProperty Name="MEMBERID" ColumnName="MEMBERID" />
+                <ScalarProperty Name="PERSONID" ColumnName="PERSONID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
+                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT">
+            <EntityTypeMapping TypeName="Model.PRODUCT">
+              <MappingFragment StoreEntitySet="PRODUCT">
+                <ScalarProperty Name="PRODUCTID" ColumnName="PRODUCTID" />
+                <ScalarProperty Name="SUPPLIERID" ColumnName="SUPPLIERID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="UNITPRICE" ColumnName="UNITPRICE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUPPLIER">
+            <EntityTypeMapping TypeName="Model.SUPPLIER">
+              <MappingFragment StoreEntitySet="SUPPLIER">
+                <ScalarProperty Name="SUPPLIERID" ColumnName="SUPPLIERID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="PHONE" ColumnName="PHONE" />
+                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TEAMBUY">
+            <EntityTypeMapping TypeName="Model.TEAMBUY">
+              <MappingFragment StoreEntitySet="TEAMBUY">
+                <ScalarProperty Name="TEAMID" ColumnName="TEAMID" />
+                <ScalarProperty Name="MEMBERID" ColumnName="MEMBERID" />
+                <ScalarProperty Name="STARTDATE" ColumnName="STARTDATE" />
+                <ScalarProperty Name="ENDDATE" ColumnName="ENDDATE" />
+                <ScalarProperty Name="LEASTAMOUNT" ColumnName="LEASTAMOUNT" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TEAMORDER">
+            <EntityTypeMapping TypeName="Model.TEAMORDER">
+              <MappingFragment StoreEntitySet="TEAMORDER">
+                <ScalarProperty Name="MEMBERID" ColumnName="MEMBERID" />
+                <ScalarProperty Name="TEAMID" ColumnName="TEAMID" />
+                <ScalarProperty Name="PRODUCTID" ColumnName="PRODUCTID" />
+                <ScalarProperty Name="AMOUNT" ColumnName="AMOUNT" />
+                <ScalarProperty Name="QUANTITY" ColumnName="QUANTITY" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TRANSACTION">
+            <EntityTypeMapping TypeName="Model.TRANSACTION">
+              <MappingFragment StoreEntitySet="TRANSACTION">
+                <ScalarProperty Name="TID" ColumnName="TID" />
+                <ScalarProperty Name="TEAMID" ColumnName="TEAMID" />
+                <ScalarProperty Name="TIME" ColumnName="TIME" />
+                <ScalarProperty Name="ADDRESS" ColumnName="ADDRESS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
